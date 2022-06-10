@@ -20,7 +20,6 @@
 #ifndef _HFNODE_H
 #define _HFNODE_H
 
-#include <iostream>
 #include <vector>
 #include <queue>
 #include <stack>
