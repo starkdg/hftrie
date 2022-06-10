@@ -182,7 +182,7 @@ void hft::HFTrie::Print(ostream &ostrm)const{
 
 				vector<hf_t> entries = ((HFLeaf*)node)->GetEntries();
 
-				cout << "ListEntries: " << endl;
+				ostrm << "ListEntries: " << endl;
 				for (hf_t &e : entries){
 					ostrm << "    " << dec << e.id << " " << hex << e.code << endl;
 				}

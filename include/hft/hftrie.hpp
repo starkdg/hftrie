@@ -19,6 +19,7 @@
 
 #ifndef _HFTRIE_H
 #define _HFTRIE_H
+#include <ostream>
 #include <vector>
 #include <queue>
 #include "hft/hfnode.hpp"
