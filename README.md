@@ -45,10 +45,10 @@ index for the clusters.
 
 | Index Impl. |  Memory  | pct. build ops | build time  | pct. query ops | avg. query time | 
 |-------------|----------|----------------|-------------|----------------|-----------------|
-|   MTree     |  25.1MB  |    3318%       |   275ns     |     80.6%      |        6.7ms    |
-|   MVPTree   | 680.0MB  |    2923%       |   126$\mu$s |     23.9%      |       70.3ms    |
-|   HWTree    |  75.6MB  |     n/a        |     5$\mu$s |     25.3%      |      139.2ms    |
-|   HFTrie    |  23.7MB  |     n/a        |   176ns     |    100.0%      |       18.7ms    |
+|   MTree     |  25.1MB  |    3318 %      |  275 ns     |     80.6 %     |        6.7ms    |
+|   MVPTree   |  680 MB  |    2923 %      |  126 &mu;s  |     23.9 %     |       70.3ms    |
+|   HWTree    |  75.6MB  |     n/a        |    5 &mu;s  |     25.3 %     |      139.2ms    |
+|   HFTrie    |  23.7MB  |     n/a        |  176 ns     |    100.0 %     |       18.7ms    |
 
 
 The percentage of build operations are the number of distance calculations required to build the
