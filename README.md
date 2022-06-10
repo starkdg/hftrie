@@ -16,12 +16,12 @@ the subnode for the value of its first two bits.  And so on.
 
 ```mermaid
 flowchart TD
-		  root[R] --> L1[0]
-		  root[R] --> R1[1]
-		  L1 --> L2[00]
-		  L1 --- R2[01]
-		  R1 --> L2_[10]
-		  R1 --> R2_[11}]
+		  root[R] --> L['0']
+		  root[R] --> R['1']
+		  L --> LL['00']
+		  L --- RR['01']
+		  R --> LL_['10']
+		  R --> RR_['11']
 ```
 
 That's the basic idea, but for efficiency, the bits are chunked together. So, instead
