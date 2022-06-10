@@ -29,6 +29,7 @@
 #include "hft/hftrie.hpp"
 
 using namespace std;
+using namespace hft;
 
 const int n_runs = 5;
 

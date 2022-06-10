@@ -23,7 +23,7 @@
 
 
 using namespace std;
-
+using namespace hft;
 
 
 void test_ht(){

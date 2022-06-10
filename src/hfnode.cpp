@@ -19,48 +19,50 @@
 
 #include "hft/hfnode.hpp"
 
+using namespace hft;
+
 /**
  *  HFInternal Impl.
  *
  **/
-HFNode::~HFNode(){}
+hft::HFNode::~HFNode(){}
 
-HFInternal::HFInternal(){
+hft::HFInternal::HFInternal(){
 	for (int i=0;i < NODE_FANOUT;i++){
 		m_nodes[i] = NULL;
 	}
 }
 
-HFInternal::~HFInternal(){}
+hft::HFInternal::~HFInternal(){}
 
-bool HFInternal::IsLeaf()const{
+bool hft::HFInternal::IsLeaf()const{
 	return false;
 }
 
-size_t HFInternal::Size()const{
+size_t hft::HFInternal::Size()const{
 	return 0;
 }
 
-size_t HFInternal::nbytes()const{
+size_t hft::HFInternal::nbytes()const{
 	return NODE_FANOUT*sizeof(hf_t);
 }
 
-void HFInternal::SetChildNode(HFNode *node, const int idx){
+void hft::HFInternal::SetChildNode(HFNode *node, const int idx){
 	m_nodes[idx] = node;
 }
 
-bool HFInternal::HasChildNode(const uint64_t idx)const{
+bool hft::HFInternal::HasChildNode(const uint64_t idx)const{
 	return (m_nodes[idx] != NULL);
 }
 
-HFNode* HFInternal::GetChildNode(const uint64_t idx){
+HFNode* hft::HFInternal::GetChildNode(const uint64_t idx){
 	if (m_nodes[idx] == NULL){
 		m_nodes[idx] = new HFLeaf();
 	}
 	return m_nodes[idx];
 }
 
-void HFInternal::GetChildNodes(queue<HFNode*> &nodes)const{
+void hft::HFInternal::GetChildNodes(std::queue<HFNode*> &nodes)const{
 	for (uint64_t i=0;i < NODE_FANOUT;i++){
 		if (m_nodes[i] != NULL){
 			nodes.push(m_nodes[i]);
@@ -68,7 +70,8 @@ void HFInternal::GetChildNodes(queue<HFNode*> &nodes)const{
 	}
 }
 
-void HFInternal::Search(const uint64_t target, const int level, const int subradius, const int radius, queue<hf_search_t> &nodes){
+void hft::HFInternal::Search(const uint64_t target, const int level, const int subradius, const int radius,
+							 std::queue<hf_search_t> &nodes){
 
 	uint64_t idx = extract_index(target, level);
 
@@ -90,31 +93,33 @@ void HFInternal::Search(const uint64_t target, const int level, const int subrad
  *  HFLeaf Impl
  *
  **/
-HFLeaf::HFLeaf(){}
+hft::HFLeaf::HFLeaf(){}
 
-HFLeaf::~HFLeaf(){}
+hft::HFLeaf::~HFLeaf(){}
 
-bool HFLeaf::IsLeaf()const{
+bool hft::HFLeaf::IsLeaf()const{
 	return true;
 }
 
-size_t HFLeaf::Size()const{
+size_t hft::HFLeaf::Size()const{
 	return m_entries.size();
 }
 
-size_t HFLeaf::nbytes()const{
+size_t hft::HFLeaf::nbytes()const{
 	return m_entries.capacity()*sizeof(hf_t);
 }
 
-void HFLeaf::Add(const hf_t &item, const int level){
+void hft::HFLeaf::Add(const hf_t &item, const int level){
 	m_entries.push_back(item);
 }
 
-const vector<hf_t>& HFLeaf::GetEntries()const{
+const std::vector<hf_t>& hft::HFLeaf::GetEntries()const{
 	return m_entries;
 }
 
-void HFLeaf::Search(const uint64_t target, const int level, const int subradius, const int radius, vector<hf_t> &results){
+void hft::HFLeaf::Search(const uint64_t target, const int level,
+						 const int subradius, const int radius,
+						 std::vector<hf_t> &results){
 
 	uint64_t idx = extract_index(target, level);
 	for (hf_t &e : m_entries){
@@ -129,7 +134,7 @@ void HFLeaf::Search(const uint64_t target, const int level, const int subradius,
 	}
 }
 
-void HFLeaf::Delete(const hf_t &item, const int level){
+void hft::HFLeaf::Delete(const hf_t &item, const int level){
 	for (auto iter=m_entries.begin();iter != m_entries.end();){
 		if (iter->id == item.id && iter->code == item.code){
 			iter = m_entries.erase(iter);

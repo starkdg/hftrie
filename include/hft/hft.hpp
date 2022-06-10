@@ -27,34 +27,34 @@
 #define NODE_FANOUT 16
 #define LC 50
 
-using namespace std;
+namespace hft {
 
-struct hf_t {
-	static unsigned long n_ops;
-	long long id;
-	uint64_t code;
-	hf_t():id(0),code(0){};
-	hf_t(const long long id, const uint64_t code):id(id),code(code){}
-	hf_t(const hf_t &other);
-	hf_t& operator=(const hf_t &other);
-	int hdistance(const uint64_t c)const;
-};
+	struct hf_t {
+		static unsigned long n_ops;
+		long long id;
+		uint64_t code;
+		hf_t():id(0),code(0){};
+		hf_t(const long long id, const uint64_t code):id(id),code(code){}
+		hf_t(const hf_t &other);
+		hf_t& operator=(const hf_t &other);
+		int hdistance(const uint64_t c)const;
+	};
 
-class HFNode;
+	class HFNode;
 
-struct hf_search_t {
-	const HFNode *node;
-	int lvl;
-	int r;
-	hf_search_t(const HFNode *node,const int lvl, const int r):node(node),lvl(lvl),r(r){}
-	hf_search_t(const hf_search_t &other);
-	hf_search_t& operator=(const hf_search_t &other);
-};
+	struct hf_search_t {
+		const HFNode *node;
+		int lvl;
+		int r;
+		hf_search_t(const HFNode *node,const int lvl, const int r):node(node),lvl(lvl),r(r){}
+		hf_search_t(const hf_search_t &other);
+		hf_search_t& operator=(const hf_search_t &other);
+	};
 
-uint64_t create_mask(const int level);
+	uint64_t create_mask(const int level);
 
-uint64_t extract_index(const uint64_t code, const int level);
+	uint64_t extract_index(const uint64_t code, const int level);
 
-
+}
 
 #endif /* _HF_H */

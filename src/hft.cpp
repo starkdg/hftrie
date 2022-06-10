@@ -19,42 +19,44 @@
 
 #include "hft/hft.hpp"
 
+using namespace hft;
+
 /**
  *  hf_t impl basic data struct for items
  *
  **/
-unsigned long hf_t::n_ops = 0;
+unsigned long hft::hf_t::n_ops = 0;
 
-hf_t::hf_t(const hf_t &other){
+hft::hf_t::hf_t(const hf_t &other){
 	id = other.id;
 	code = other.code;
 }
 
-hf_t& hf_t::operator=(const hf_t &other){
+hf_t& hft::hf_t::operator=(const hf_t &other){
 	id = other.id;
 	code = other.code;
 	return *this;
 }
 
-int hf_t::hdistance(const uint64_t c)const{
-	hf_t::n_ops++;
+int hft::hf_t::hdistance(const uint64_t c)const{
+	hft::hf_t::n_ops++;
 	return __builtin_popcountll(code^c);
 }
 
-hf_search_t::hf_search_t(const hf_search_t &other){
+hft::hf_search_t::hf_search_t(const hf_search_t &other){
 	node = other.node;
 	lvl = other.lvl;
 	r = other.r;
 }
 
-hf_search_t& hf_search_t::operator=(const hf_search_t &other){
+hft::hf_search_t& hf_search_t::operator=(const hf_search_t &other){
 	node = other.node;
 	lvl = other.lvl;
 	r = other.r;
 	return *this;
 }
 
-uint64_t create_mask(const int level){
+uint64_t hft::create_mask(const int level){
 	uint64_t mask = 1ULL;
 	mask <<= CHUNKSIZE;
 	mask -= 1;
@@ -63,7 +65,7 @@ uint64_t create_mask(const int level){
 	return mask;
 }
 
-uint64_t extract_index(const uint64_t code, const int level){
+uint64_t hft::extract_index(const uint64_t code, const int level){
 	uint64_t mask = create_mask(level);
 	uint64_t result = code & mask;
 	result >>= NDIMS - CHUNKSIZE - CHUNKSIZE*level;

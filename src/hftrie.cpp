@@ -19,14 +19,16 @@
 
 #include "hft/hftrie.hpp"
 
+using namespace std;
+using namespace hft;
 
-HFTrie::HFTrie(){
+hft::HFTrie::HFTrie(){
 	m_top = NULL;
 }
 
 
 
-void HFTrie::Insert(const hf_t &item){
+void hft::HFTrie::Insert(const hf_t &item){
 	if (m_top == NULL){
 		m_top = new HFLeaf();
 		((HFLeaf*)m_top)->Add(item, 0);
@@ -66,7 +68,7 @@ void HFTrie::Insert(const hf_t &item){
 	}
 }
 
-void HFTrie::Delete(const hf_t &item){
+void hft::HFTrie::Delete(const hf_t &item){
 	if (m_top == NULL) return;
 
 	int level = 0;
@@ -89,7 +91,7 @@ void HFTrie::Delete(const hf_t &item){
 
 
 
-vector<hf_t> HFTrie::RangeSearch(const uint64_t target, const int radius)const{
+vector<hf_t> hft::HFTrie::RangeSearch(const uint64_t target, const int radius)const{
 	vector<hf_t> results;
 
 	queue<hf_search_t> nodes;
@@ -114,7 +116,7 @@ vector<hf_t> HFTrie::RangeSearch(const uint64_t target, const int radius)const{
 	return results;
 }
 
-size_t HFTrie::Size()const{
+size_t hft::HFTrie::Size()const{
 
 	queue<HFNode*> nodes;
 	if (m_top != NULL) nodes.push(m_top);
@@ -133,7 +135,7 @@ size_t HFTrie::Size()const{
 	return count;
 }
 
-void HFTrie::Clear(){
+void hft::HFTrie::Clear(){
 	queue<HFNode*> nodes;
 	if (m_top != NULL) nodes.push(m_top);
 
@@ -147,7 +149,7 @@ void HFTrie::Clear(){
 	m_top = NULL;
 }
 
-size_t HFTrie::MemoryUsage()const{
+size_t hft::HFTrie::MemoryUsage()const{
 	queue<HFNode*> nodes;
 	if (m_top != NULL) nodes.push(m_top);
 
@@ -163,7 +165,7 @@ size_t HFTrie::MemoryUsage()const{
 }
 
 
-void HFTrie::Print(ostream &ostrm)const{
+void hft::HFTrie::Print(ostream &ostrm)const{
 	queue<HFNode*> current, next;
 
 	ostrm << "------HF Trie-------" << endl;

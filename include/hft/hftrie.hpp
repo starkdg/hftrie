@@ -23,31 +23,31 @@
 #include <queue>
 #include "hft/hfnode.hpp"
 
-using namespace std;
+namespace hft {
 
-class HFTrie {
-private:
-	HFNode *m_top;
+	class HFTrie {
+	private:
+		HFNode *m_top;
 
-public:
-	HFTrie();
+	public:
+		HFTrie();
 
-	void Insert(const hf_t &item);
+		void Insert(const hf_t &item);
 
-	void Delete(const hf_t &item);
+		void Delete(const hf_t &item);
 	
-	vector<hf_t> RangeSearch(const uint64_t target, const int radius)const;
+		std::vector<hf_t> RangeSearch(const uint64_t target, const int radius)const;
 
-	size_t Size()const;
+		size_t Size()const;
 
-	void Clear();
+		void Clear();
 	
-	size_t MemoryUsage()const;
+		size_t MemoryUsage()const;
 
-	void Print(ostream &ostrm)const;
+		void Print(std::ostream &ostrm)const;
 	
-};
-
+	};
+}
 
 
 #endif /* _HFTRIE_H */

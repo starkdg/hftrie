@@ -26,49 +26,53 @@
 #include <stack>
 #include "hft/hft.hpp"
 
-using namespace std;
+namespace hft {
 
-class HFNode {
-public:
-	virtual ~HFNode();
-	virtual bool IsLeaf()const = 0;
-	virtual size_t Size()const = 0;
-	virtual size_t nbytes()const = 0;
+	class HFNode {
+	public:
+		virtual ~HFNode();
+		virtual bool IsLeaf()const = 0;
+		virtual size_t Size()const = 0;
+		virtual size_t nbytes()const = 0;
+	};
+
+
+	class HFInternal : public HFNode {
+	private:
+		HFNode* m_nodes[NODE_FANOUT];
+	public:
+		HFInternal();
+		~HFInternal();
+		bool IsLeaf()const;
+		std::size_t Size()const;
+		std::size_t nbytes()const;
+		
+		void SetChildNode(HFNode *node, const int idx);
+		bool HasChildNode(const std::uint64_t idx)const;
+		HFNode* GetChildNode(const std::uint64_t idx);
+		void GetChildNodes(std::queue<HFNode*> &nodes)const;
+		void Search(const std::uint64_t target,
+					const int level, const int subradius,
+					const int radius, std::queue<hf_search_t> &nodes);
+	};
+
+	class HFLeaf : public HFNode {
+	private:
+		std::vector<hf_t> m_entries;
+	public:
+		HFLeaf();
+		~HFLeaf();
+		bool IsLeaf()const;
+		std::size_t Size()const;
+		std::size_t nbytes()const;
 	
-};
-
-
-class HFInternal : public HFNode {
-private:
-	HFNode* m_nodes[NODE_FANOUT];
-public:
-	HFInternal();
-	~HFInternal();
-	bool IsLeaf()const;
-	size_t Size()const;
-	size_t nbytes()const;
-	
-	void SetChildNode(HFNode *node, const int idx);
-	bool HasChildNode(const uint64_t idx)const;
-	HFNode* GetChildNode(const uint64_t idx);
-	void GetChildNodes(queue<HFNode*> &nodes)const;
-	void Search(const uint64_t target, const int level, const int subradius, const int radius, queue<hf_search_t> &nodes);
-};
-
-class HFLeaf : public HFNode {
-private:
-	vector<hf_t> m_entries;
-public:
-	HFLeaf();
-	~HFLeaf();
-	bool IsLeaf()const;
-	size_t Size()const;
-	size_t nbytes()const;
-	
-    void Add(const hf_t &item, const int level);
-	const vector<hf_t>& GetEntries()const;
-	void Search(const uint64_t target, const int level, const int subradius, const int radius, vector<hf_t> &results);
-	void Delete(const hf_t &item, const int level);
-};
+		void Add(const hf_t &item, const int level);
+		const std::vector<hf_t>& GetEntries()const;
+		void Search(const std::uint64_t target,
+					const int level, const int subradius,
+					const int radius, std::vector<hf_t> &results);
+		void Delete(const hf_t &item, const int level);
+	};
+}
 
 #endif /* _HFNODE_H */

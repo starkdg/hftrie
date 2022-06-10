@@ -24,6 +24,7 @@
 #include "hft/hftrie.hpp"
 
 using namespace std;
+using namespace hft;
 
 const int n_entries = 100;
 const int n_clusters = 5;
