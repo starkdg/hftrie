@@ -23,6 +23,9 @@ add_executable(runhftrie tests/run_hftrie.cpp)
 target_compile_options(runhftrie PUBLIC -g -Ofast -Wall)
 target_link_libraries(runhftrie hftrie)
 
+add_executable(seqsearch tests/seqsearch.cpp)
+target_compile_options(seqsearch PUBLIC -g -Ofast -Wall)
+
 include(CTest)
 add_test(NAME test1 COMMAND testhft)
 add_test(NAME test2 COMMAND testhftrie)
