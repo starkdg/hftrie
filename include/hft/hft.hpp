@@ -25,7 +25,7 @@
 #define NDIMS 64
 #define CHUNKSIZE 4
 #define NODE_FANOUT 16
-#define LC 50
+#define LC 10
 
 namespace hft {
 

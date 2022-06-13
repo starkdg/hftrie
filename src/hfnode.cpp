@@ -70,20 +70,18 @@ void hft::HFInternal::GetChildNodes(std::queue<HFNode*> &nodes)const{
 	}
 }
 
-void hft::HFInternal::Search(const uint64_t target, const int level, const int subradius, const int radius,
+void hft::HFInternal::Search(const uint64_t target, uint64_t target_idx, const int level, const int radius,
 							 std::queue<hf_search_t> &nodes){
-
-	uint64_t idx = extract_index(target, level);
-
 
 	for (uint64_t i=0;i < NODE_FANOUT;i++){
 		if (m_nodes[i] != NULL){
-			if (i == idx){
+			if (i == target_idx){
 				nodes.push({m_nodes[i], level+1, radius});
 			} else {
-				int d = __builtin_popcountll(idx^i);
-				d = (d <= radius) ? radius - d : 0;
-				nodes.push({ m_nodes[i], level+1, d });
+				int d = __builtin_popcountll(target_idx^i);
+				if (d <= radius){
+					nodes.push({ m_nodes[i], level+1, radius - d});
+				}
 			}
 		}
 	}
@@ -117,19 +115,11 @@ const std::vector<hf_t>& hft::HFLeaf::GetEntries()const{
 	return m_entries;
 }
 
-void hft::HFLeaf::Search(const uint64_t target, const int level,
-						 const int subradius, const int radius,
-						 std::vector<hf_t> &results){
-
-	uint64_t idx = extract_index(target, level);
+void hft::HFLeaf::Search(const uint64_t target, const uint64_t target_idx, const int level,
+						 const int radius, std::vector<hf_t> &results){
 	for (hf_t &e : m_entries){
-		uint64_t entry_idx = extract_index(e.code, level);
-		int subd = __builtin_popcountll(idx^entry_idx);
-		if (subd <= subradius){
-			int d = e.hdistance(target);
-			if (d <= radius){
-				results.push_back(e);
-			}
+		if (e.hdistance(target) <= radius){
+			results.push_back(e);
 		}
 	}
 }

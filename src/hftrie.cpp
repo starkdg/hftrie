@@ -26,6 +26,9 @@ hft::HFTrie::HFTrie(){
 	m_top = NULL;
 }
 
+hft::HFTrie::~HFTrie(){
+	Clear();
+}
 
 
 void hft::HFTrie::Insert(const hf_t &item){
@@ -100,19 +103,25 @@ vector<hf_t> hft::HFTrie::RangeSearch(const uint64_t target, const int radius)co
 		nodes.push({ m_top, 0, radius });
 	}
 
+	int level = 0;
 	while (!nodes.empty()){
-		hf_search_t current  = nodes.front();
+		uint64_t target_idx = extract_index(target, level);
+		queue<hf_search_t> next_nodes;
 
-		if (current.node->IsLeaf()){
-			HFLeaf *leaf = (HFLeaf*)current.node;
-			leaf->Search(target, current.lvl, current.r, radius, results);
-		} else {
-			HFInternal *internal = (HFInternal*)current.node;
-			internal->Search(target, current.lvl, current.r, radius, nodes);
+		while (!nodes.empty()){
+			hf_search_t current = nodes.front();
+			if (current.node->IsLeaf()){
+				HFLeaf *leaf = (HFLeaf*)current.node;
+				leaf->Search(target, target_idx, current.lvl, radius, results);
+			} else {
+				HFInternal *internal = (HFInternal*)current.node;
+				internal->Search(target, target_idx, current.lvl, current.r, next_nodes);
+			}
+			nodes.pop();
 		}
-		nodes.pop();
+		nodes = move(next_nodes);
+		level++;
 	}
-
 	return results;
 }
 

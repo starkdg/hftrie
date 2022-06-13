@@ -33,6 +33,8 @@ namespace hft {
 	public:
 		HFTrie();
 
+		~HFTrie();
+
 		void Insert(const hf_t &item);
 
 		void Delete(const hf_t &item);

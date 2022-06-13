@@ -50,9 +50,8 @@ namespace hft {
 		bool HasChildNode(const std::uint64_t idx)const;
 		HFNode* GetChildNode(const std::uint64_t idx);
 		void GetChildNodes(std::queue<HFNode*> &nodes)const;
-		void Search(const std::uint64_t target,
-					const int level, const int subradius,
-					const int radius, std::queue<hf_search_t> &nodes);
+		void Search(const std::uint64_t target, const std::uint64_t target_idx,
+					const int level, const int radius, std::queue<hf_search_t> &nodes);
 	};
 
 	class HFLeaf : public HFNode {
@@ -67,9 +66,8 @@ namespace hft {
 	
 		void Add(const hf_t &item, const int level);
 		const std::vector<hf_t>& GetEntries()const;
-		void Search(const std::uint64_t target,
-					const int level, const int subradius,
-					const int radius, std::vector<hf_t> &results);
+		void Search(const std::uint64_t target, const std::uint64_t target_idx,
+					const int level, const int radius, std::vector<hf_t> &results);
 		void Delete(const hf_t &item, const int level);
 	};
 }
