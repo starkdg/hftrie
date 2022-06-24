@@ -111,7 +111,7 @@ void test(){
 		for (hf_t r : results){
 			cout << "  " << dec << r.id << " " << hex << r.code << endl;
 		}
-		assert(results.size() == ClusterSize);
+		assert(results.size() > 0);
 		g_id += ClusterSize;
 	}
 

@@ -32,6 +32,7 @@ using namespace std;
 using namespace hft;
 
 
+
 static random_device m_rd;
 static mt19937_64 m_gen(m_rd());
 static uniform_int_distribution<uint64_t> m_distrib(0);
@@ -46,7 +47,8 @@ struct perfmetric {
 	double avg_build_time;
 	double avg_query_ops;
 	double avg_query_time;
-	size_t avg_memory_used;
+	double avg_memory_used;
+	double avg_recall;
 };
 
 int generate_data(vector<hf_t> &entries, const int n){
@@ -126,21 +128,25 @@ void do_run(const int index, const int n_runs, const int n_entries,
 		assert(sz == n_entries + cluster_size*(i+1));
 	}
 
+	int total_returned = 0;
+	
 	hf_t::n_ops = 0;
 	chrono::duration<double, milli> querytime(0);
 	for (int i=0;i < n_clusters;i++){
 		auto s = chrono::steady_clock::now();
-		vector<hf_t> results = trie.RangeSearch(centers[i], radius);
+		vector<hf_t> results = trie.RangeSearchFast(centers[i], radius);
 		auto e = chrono::steady_clock::now();
 		querytime += (e - s);
 
 		int nresults = (int)results.size();
-		assert(nresults >= cluster_size);
+		total_returned += nresults;
+		assert((int)nresults >=0);
 	}
 
 	m.avg_query_ops = 100.0*((double)hf_t::n_ops/(double)n_clusters/(double)sz);
 	m.avg_query_time = (double)querytime.count()/(double)n_clusters;
-
+	m.avg_recall = (double)total_returned/(double)n_clusters/(double)cluster_size;
+	
 	cout << " query ops " << dec << setprecision(6) << m.avg_query_ops << "% opers   " 
 		 << "query time: " << dec <<setprecision(6) <<  m.avg_query_time << " millisecs" << endl;
 
@@ -172,29 +178,35 @@ void do_experiment(const int n, const int n_runs, const int n_entries,
 	double avg_query_ops = 0;
 	double avg_query_time = 0;
 	double avg_memory = 0;
+	double avg_recall = 0;
 	for (struct perfmetric &m : metrics){
 		avg_build_ops += m.avg_build_ops/n_runs;
 		avg_build_time += m.avg_build_time/n_runs;
 		avg_query_ops += m.avg_query_ops/n_runs;
 		avg_query_time += m.avg_query_time/n_runs;
 		avg_memory += (double)m.avg_memory_used/(double)n_runs;
+		avg_recall += m.avg_recall/(double)n_runs;
 	}
 
 	cout << "no. runs: " << metrics.size() << endl;
 	cout << "avg build:  " << avg_build_ops << "% opers " << avg_build_time << " nsecs" << endl;
 	cout << "avg query:  " << avg_query_ops << "% opers " << avg_query_time << " msecs" << endl;
+	cout << "query recall: " << 100.0*avg_recall << "%" << endl; 
 	cout << "Memory Usage: " << fixed << setprecision(2) << avg_memory/1000000.0 << "MB" << endl;
 	cout << "------------------------------------------------------------" << endl << endl;
 }	
 	   
 
 int main(int argc, char **argv){
-	const int n_experiments = 8;
+
 	const int n_runs = 5;
-	const int n_entries[n_experiments] = { 100000, 200000, 400000, 800000, 1000000, 2000000, 4000000, 8000000 };
+	const int n_experiments = 12;
+	const int n_entries[n_experiments] = { 100000, 200000, 400000, 800000,
+										   1000000, 2000000, 4000000, 8000000,
+										   16000000, 32000000, 64000000, 128000000};
 	const int n_clusters = 10;
 	const int cluster_size = 10;
-	const double radius = 2;
+	const double radius = 10;
 
 	cout << "Test hftrie data structure" << endl;
 	cout << "Chunk Size: " << CHUNKSIZE << endl;
@@ -202,15 +214,14 @@ int main(int argc, char **argv){
 	cout << "All stats avg'd  over " << n_runs << " runs" << endl;
 	cout << endl << endl;
 
+   
 	cout << "        Experiments with varying dataset size, N = 100K to 32M " << endl;
 
 	for (int i=0;i < n_experiments;i++){
 		do_experiment(i+1, n_runs, n_entries[i], n_clusters, cluster_size, radius);
 	}	
 
-
 	cout << "        Experiments varying the query radius and under constant N" << endl;
-
 	const int N = 4000000;
 	const int n_rad = 7;
 	const int rad[n_rad] = { 0, 2, 4, 6, 8, 10, 12 };
@@ -218,7 +229,6 @@ int main(int argc, char **argv){
 	for (int i=0;i < n_rad;i++){
 		do_experiment(i+1, n_runs, N, n_clusters, cluster_size, rad[i]);
 	}
-	
 
 	return 0;
 }

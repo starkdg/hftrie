@@ -39,6 +39,8 @@ namespace hft {
 
 		void Delete(const hf_t &item);
 	
+		std::vector<hf_t> RangeSearchFast(const uint64_t target, const int radius)const;
+
 		std::vector<hf_t> RangeSearch(const uint64_t target, const int radius)const;
 
 		size_t Size()const;

@@ -92,7 +92,36 @@ void hft::HFTrie::Delete(const hf_t &item){
 	
 }
 
+vector<hf_t> hft::HFTrie::RangeSearchFast(const uint64_t target, const int radius)const{
+	vector<hf_t> results;
 
+	queue<hf_search_t> nodes;
+
+	if (m_top != NULL){
+		nodes.push({ m_top, 0, radius });
+	}
+
+	int level = 0;
+	while (!nodes.empty()){
+		uint64_t target_idx = extract_index(target, level);
+		queue<hf_search_t> next_nodes;
+
+		while (!nodes.empty()){
+			hf_search_t current = nodes.front();
+			if (current.node->IsLeaf()){
+				HFLeaf *leaf = (HFLeaf*)current.node;
+				leaf->Search(target, target_idx, current.lvl, radius, results);
+			} else {
+				HFInternal *internal = (HFInternal*)current.node;
+				internal->SearchFast(target, target_idx, current.lvl, current.r, next_nodes);
+			}
+			nodes.pop();
+		}
+		nodes = move(next_nodes);
+		level++;
+	}
+	return results;
+}
 
 vector<hf_t> hft::HFTrie::RangeSearch(const uint64_t target, const int radius)const{
 	vector<hf_t> results;
@@ -170,7 +199,7 @@ size_t hft::HFTrie::MemoryUsage()const{
 			((HFInternal*)current)->GetChildNodes(nodes);
 		nodes.pop();
 	}
-	return nbytes + sizeof(m_top);
+	return nbytes + sizeof(HFTrie);
 }
 
 

@@ -109,7 +109,7 @@ void run(const int index, const int n_entries, const int n_clusters,
 		auto e = chrono::steady_clock::now();
 
 		querytime += (e - s);
-		assert((int)results.size() >= clustersize);
+		assert((int)results.size() >= cluster_size);
 	}
 
 	size_t sz = entries.size();
@@ -160,9 +160,12 @@ void do_experiment(const int n_runs, const int n_entries, const int n_clusters,
 
 int main(int argc, char **argv){
 
-	const int n_runs = 5;
-	const int n_experiments = 9;
-	const int n_entries[n_experiments] = { 100000, 200000, 400000, 800000, 1000000, 2000000, 4000000, 8000000, 16000000 };
+	const int n_runs = 1;
+	const int n_experiments = 15;
+	const int n_entries[n_experiments] = { 100000, 200000, 400000, 800000,
+										   1000000, 2000000, 4000000, 8000000,
+										   16000000, 32000000, 64000000,  128000000,
+										   256000000, 512000000, 1000000000};
 	const int n_clusters = 10;
 	const int cluster_size = 10;
 	const int radius = 10;

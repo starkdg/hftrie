@@ -44,7 +44,7 @@ size_t hft::HFInternal::Size()const{
 }
 
 size_t hft::HFInternal::nbytes()const{
-	return NODE_FANOUT*sizeof(hf_t);
+	return sizeof(HFInternal); 
 }
 
 void hft::HFInternal::SetChildNode(HFNode *node, const int idx){
@@ -70,18 +70,33 @@ void hft::HFInternal::GetChildNodes(std::queue<HFNode*> &nodes)const{
 	}
 }
 
+void hft::HFInternal::SearchFast(const uint64_t target, uint64_t target_idx, const int level, const int radius,
+							 std::queue<hf_search_t> &nodes){
+
+    if (m_nodes[target_idx] != NULL){
+		nodes.push({ m_nodes[target_idx], level+1, radius });
+	}
+	
+	if (radius > 0){
+		uint64_t mask = 0x0001ULL << (CHUNKSIZE-1);
+		while (mask != 0){
+			uint64_t idx = target_idx^mask;
+			if (m_nodes[idx] != NULL){
+				nodes.push({ m_nodes[idx], level+1, radius - 1 });
+			}
+			mask >>= 1;
+		}
+	}
+}
+
 void hft::HFInternal::Search(const uint64_t target, uint64_t target_idx, const int level, const int radius,
 							 std::queue<hf_search_t> &nodes){
 
 	for (uint64_t i=0;i < NODE_FANOUT;i++){
 		if (m_nodes[i] != NULL){
-			if (i == target_idx){
-				nodes.push({m_nodes[i], level+1, radius});
-			} else {
-				int d = __builtin_popcountll(target_idx^i);
-				if (d <= radius){
-					nodes.push({ m_nodes[i], level+1, radius - d});
-				}
+			int d = radius - __builtin_popcountll(target_idx^i);
+			if (d >= 0){
+				nodes.push({ m_nodes[i], level+1, d});
 			}
 		}
 	}
@@ -104,7 +119,7 @@ size_t hft::HFLeaf::Size()const{
 }
 
 size_t hft::HFLeaf::nbytes()const{
-	return m_entries.capacity()*sizeof(hf_t);
+	return sizeof(HFLeaf) + m_entries.capacity()*sizeof(hf_t);
 }
 
 void hft::HFLeaf::Add(const hf_t &item, const int level){
