@@ -24,15 +24,22 @@ flowchart TD
 		  R --> RR_[11xx]
 ```
 
-That's the basic idea, but for efficiency, the bits are chunked together. So, instead
-of considering only one bit per level, multiple bits (e.g. 4) are used from the successive
-bits to sort the items.  This naturally increases the fanout of each node.  For two bits
+That's the basic idea, but for efficiency, the bits are chunked together.
+So, instead of considering only one bit per level, multiple bits (e.g. 4) are used from the bit sequence
+at each level to sort into child nodes.  This naturally increases the fanout of each node.  For two bits
 per layer, each node will sort into four possible child nodes.  For 4 bits per layer, there
 are 16 possible child nodes.  And so on. 
 
 
-
 ## 		  		  Performance
+
+Here are the performance metrics for the HFTrie for various index sizes.
+The insert and query times are the average times it takes to insert or query the index.
+Query Operations is for the average number of distance calculations performed for a range search,
+normalized to the size of the index and expressed as a percentage.
+The last column is for the recall percentage,
+or the average proportion of the cluster that should be returned with each query.
+The fast range search sacrfices a bit in accuracy for a significant boost in speed efficiency.   
 
 ### Fast Range Search
 
@@ -52,6 +59,10 @@ are 16 possible child nodes.  And so on.
 | 128M | 4.3GB |  674 ns  |  0.08%  |  7.39 ms   |  92.4%  |
 
 
+For a constant index size, N = 4M, the query performance varies for different radius values.
+Better accuracy is guaranteed for lower radius searches with modest reductions in accuracy
+for larger range searches.
+
 | Radius | Query Opers. | Query Time | Recall |
 |--------|--------------|------------|--------|
 |  0 | 0.0003% | 1.46 &mu;s | 100%  |
@@ -65,6 +76,10 @@ are 16 possible child nodes.  And so on.
 
 ### Standard Range Search
 
+A standard range search guarantees query accuracy with significant added
+costs to speed.  
+
+
 |   N  |  MEM  |  Insert time  |  Query Opers.  |  Query Time  |  Recall  |
 |------|-------|---------------|----------------|--------------|----------|
 | 100K | 4.0MB |  134 ns  |  89.5%  |  3.40 ms |  100%  |
@@ -77,8 +92,8 @@ are 16 possible child nodes.  And so on.
 |   8M | 268MB |  363 ns  |  51.2%  |  191 ms  |  100%  |
 |  16M | 727MB |  457 ns  |  29.0%  |  454 ms  |  100%  |
 |  32M | 1.2GB |  533 ns  |  27.1%  |  783 ms  |  100%  |
-|  64M | 1.9GB |  604 ns  |  27.0%  |  1.29 ms |  100%  |
-| 128M | 4.3GB |  665 ns  |  22.8%  |  1.95 ms |  100%  |
+|  64M | 1.9GB |  604 ns  |  27.0%  |  1.29 s  |  100%  |
+| 128M | 4.3GB |  665 ns  |  22.8%  |  1.95 s  |  100%  |
 
 
 ### Comparison
@@ -89,7 +104,8 @@ performed per query, normalized to the size of the dataset.  All search queries 
 peformed for a radius = 10.  Note that all methods underperform a simple sequential
 search at such a large radius. Only the HFTrie's fast range search outperforms the
 sequential search with the drawback that it is only able to achieve 85% recall of
-all cluster objects.  It is, however, guaranteed to return all exact matches.
+all cluster objects for an extended radius.
+It is, however, guaranteed to return all exact matches for smaller range searches.
 
 
 For data set size, N = 4M and query radius = 10:
@@ -103,6 +119,10 @@ For data set size, N = 4M and query radius = 10:
 | HWTree      |  312MB  |  1.69 &mu;s  |  17.6%  |  222 ms  | 100%  |
 | HFTrie-std  |  124MB  |  327 ns  |  58.6%  |  111 ms  |  100%  |
 | HFTrie-fast |  124MB  |  330 ns  |  0.30%  |  618 &mu;s  |  85.6%  | 
+
+
+You can run these tests with the compiled program `runhftrie`.
+View the source in tests/run_hftrie.cpp.  
 
 
 ##                  Install
