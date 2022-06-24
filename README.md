@@ -34,7 +34,7 @@ are 16 possible child nodes.  And so on.
 
 ## 		  		  Performance
 
-## Fast Range Search
+### Fast Range Search
 
 |  N   |  MEM  | Insert Time |  Query Opers.  |  Query Time  |  Recall  |
 |------|-------|-------------|----------------|--------------|----------|
@@ -63,7 +63,7 @@ are 16 possible child nodes.  And so on.
 | 12 | 0.30%   | 619 &mu;s  | 88.8% |
 
 
-## Standard Range Search
+### Standard Range Search
 
 |   N  |  MEM  |  Insert time  |  Query Opers.  |  Query Time  |  Recall  |
 |------|-------|---------------|----------------|--------------|----------|
@@ -81,7 +81,19 @@ are 16 possible child nodes.  And so on.
 | 128M | 4.3GB |  665 ns  |  22.8%  |  1.95 ms |  100%  |
 
 
-# Comparison
+### Comparison
+
+Here is a comparison of different methods of indexing a uniform distributed
+data set of 4 million.  Query operations notes the number of distance computations
+performed per query, normalized to the size of the dataset.  All search queries are
+peformed for a radius = 10.  Note that all methods underperform a simple sequential
+search at such a large radius. Only the HFTrie's fast range search outperforms the
+sequential search with the drawback that it is only able to achieve 85% recall of
+all cluster objects.  It is, however, guaranteed to return all exact matches.
+
+
+For data set size, N = 4M and query radius = 10:
+
 
 |  Method     |  MEM  |  Insert Time  |  Query Opers.  |  Query Time  |  Recall  |
 |-------------|-------|---------------|----------------|--------------|----------|
