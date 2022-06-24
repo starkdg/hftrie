@@ -122,7 +122,7 @@ For data set size, N = 4M and query radius = 10:
 
 
 You can run these tests with the compiled program `runhftrie`.
-View the source in tests/run_hftrie.cpp.  
+View the source in [tests/run_hftrie.cpp](https://github.com/starkdg/hftrie/tree/master/tests).  
 
 
 ##                  Install
