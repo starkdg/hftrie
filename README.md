@@ -114,11 +114,11 @@ For data set size, N = 4M and query radius = 10:
 |  Method     |  MEM  |  Insert Time  |  Query Opers.  |  Query Time  |  Recall  |
 |-------------|-------|---------------|----------------|--------------|----------|
 | SequentialSearch |  64MB  |  n/a  |  100%  | 9.08 ms  |  100%  |
-| MVPTree     |  2.67GB |  43.9&mu;s  | 25.0%  |  276 ms  |  100% |
-| MTree       |  113MB  |  631ns   |  69.5%  |  68.2 ms  |  100%  |  
-| HWTree      |  312MB  |  1.69 &mu;s  |  17.6%  |  222 ms  | 100%  |
-| HFTrie-std  |  124MB  |  327 ns  |  58.6%  |  111 ms  |  100%  |
-| HFTrie-fast |  124MB  |  330 ns  |  0.30%  |  618 &mu;s  |  85.6%  | 
+| [MVPTree](https://github.com/starkdg/mvptree)     |  2.67GB |  43.9&mu;s  | 25.0%  |  276 ms  |  100% |
+| [MTree](https://github.com/starkdg/mtree)       |  113MB  |  631ns   |  69.5%  |  68.2 ms  |  100%  |  
+| [HWTree](https://github.com/starkdg/hwtree)      |  312MB  |  1.69 &mu;s  |  17.6%  |  222 ms  | 100%  |
+| [HFTrie](https://github.com/starkdg/hftrie)-std  |  124MB  |  327 ns  |  58.6%  |  111 ms  |  100%  |
+| [HFTrie](https://github.com/starkdg/hftrie)-fast |  124MB  |  330 ns  |  0.30%  |  618 &mu;s  |  85.6%  | 
 
 
 You can run these tests with the compiled program `runhftrie`.
